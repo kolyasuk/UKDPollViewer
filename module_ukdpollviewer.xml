@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_ukdpollviewer" default="compile.module.ukdpollviewer">
+  <dirname property="module.ukdpollviewer.basedir" file="${ant.file.module_ukdpollviewer}"/>
+  
+  <property name="module.jdk.home.ukdpollviewer" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.ukdpollviewer" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.ukdpollviewer" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.ukdpollviewer" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="ukdpollviewer.output.dir" value="${module.ukdpollviewer.basedir}/target/classes"/>
+  <property name="ukdpollviewer.testoutput.dir" value="${module.ukdpollviewer.basedir}/target/test-classes"/>
+  
+  <path id="ukdpollviewer.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="ukdpollviewer.module.production.classpath">
+    <path refid="${module.jdk.classpath.ukdpollviewer}"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-codec-1.10.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-collections4-4.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/curvesapi-1.04.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-schemas-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/stax-api-1.0.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/xmlbeans-2.6.0.jar"/>
+  </path>
+  
+  <path id="ukdpollviewer.runtime.production.module.classpath">
+    <pathelement location="${ukdpollviewer.output.dir}"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-codec-1.10.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-collections4-4.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/curvesapi-1.04.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-schemas-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/stax-api-1.0.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/xmlbeans-2.6.0.jar"/>
+  </path>
+  
+  <path id="ukdpollviewer.module.classpath">
+    <path refid="${module.jdk.classpath.ukdpollviewer}"/>
+    <pathelement location="${ukdpollviewer.output.dir}"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-codec-1.10.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-collections4-4.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/curvesapi-1.04.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-schemas-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/stax-api-1.0.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/xmlbeans-2.6.0.jar"/>
+  </path>
+  
+  <path id="ukdpollviewer.runtime.module.classpath">
+    <pathelement location="${ukdpollviewer.testoutput.dir}"/>
+    <pathelement location="${ukdpollviewer.output.dir}"/>
+    <path refid="library.maven:_org.projectlombok:lombok:1.18.8.classpath"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-codec-1.10.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/commons-collections4-4.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/curvesapi-1.04.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/poi-ooxml-schemas-3.17.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/stax-api-1.0.1.jar"/>
+    <pathelement location="${basedir}/../../Desktop/Новая папка/xmlbeans-2.6.0.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.ukdpollviewer">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.ukdpollviewer">
+    <patternset refid="excluded.from.module.ukdpollviewer"/>
+  </patternset>
+  
+  <path id="ukdpollviewer.module.sourcepath">
+    <dirset dir="${module.ukdpollviewer.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="ukdpollviewer.module.test.sourcepath">
+    <dirset dir="${module.ukdpollviewer.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.ukdpollviewer" depends="compile.module.ukdpollviewer.production,compile.module.ukdpollviewer.tests" description="Compile module UKDPollViewer"/>
+  
+  <target name="compile.module.ukdpollviewer.production" depends="register.custom.compilers" description="Compile module UKDPollViewer; production classes">
+    <mkdir dir="${ukdpollviewer.output.dir}"/>
+    <javac2 destdir="${ukdpollviewer.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.ukdpollviewer}/javac">
+      <compilerarg line="${compiler.args.ukdpollviewer}"/>
+      <bootclasspath refid="ukdpollviewer.module.bootclasspath"/>
+      <classpath refid="ukdpollviewer.module.production.classpath"/>
+      <src refid="ukdpollviewer.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.ukdpollviewer"/>
+    </javac2>
+    
+    <copy todir="${ukdpollviewer.output.dir}">
+      <fileset dir="${module.ukdpollviewer.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.ukdpollviewer.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.ukdpollviewer.tests" depends="register.custom.compilers,compile.module.ukdpollviewer.production" description="compile module UKDPollViewer; test classes" unless="skip.tests">
+    <mkdir dir="${ukdpollviewer.testoutput.dir}"/>
+    <javac2 destdir="${ukdpollviewer.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.ukdpollviewer}/javac">
+      <compilerarg line="${compiler.args.ukdpollviewer}"/>
+      <bootclasspath refid="ukdpollviewer.module.bootclasspath"/>
+      <classpath refid="ukdpollviewer.module.classpath"/>
+      <src refid="ukdpollviewer.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.ukdpollviewer"/>
+    </javac2>
+    
+    <copy todir="${ukdpollviewer.testoutput.dir}">
+      <fileset dir="${module.ukdpollviewer.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.ukdpollviewer" description="cleanup module">
+    <delete dir="${ukdpollviewer.output.dir}"/>
+    <delete dir="${ukdpollviewer.testoutput.dir}"/>
+  </target>
+</project>
