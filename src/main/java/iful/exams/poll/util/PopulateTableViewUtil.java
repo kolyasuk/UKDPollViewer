@@ -2,6 +2,8 @@ package iful.exams.poll.util;
 
 import iful.exams.poll.model.Poll;
 import iful.exams.poll.model.QuestionRating;
+import static iful.exams.poll.util.Constants.*;
+import static iful.exams.poll.util.ValuesUtil.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,16 +19,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class PopulateTableViewUtil {
-    private static final int RESPONDENT_DATA_PARAMS_COUNT = 10;
-    private static final int POLL_AVG_RATIND_INDEX = 10;
-
     private TableView tableView;
     private List<TableColumn> tableColumns;
     private File file;
@@ -50,7 +47,7 @@ public class PopulateTableViewUtil {
                 while(rowIt.hasNext()) {
                     Row row = rowIt.next();
                     Iterator<Cell> cellIterator = row.cellIterator();
-                    if(row.getRowNum() == 0){
+                    if(row.getRowNum() == FILE_COLUMNS_NAME_INDEX){
                         tableView.getColumns().addAll(defineTableColumns(cellIterator));
                     }
                     else {
@@ -69,50 +66,50 @@ public class PopulateTableViewUtil {
         while (cellIterator.hasNext()) {
             Cell cell = cellIterator.next();
             if(cell.getColumnIndex() < RESPONDENT_DATA_PARAMS_COUNT) {
-                switch (tableColumns.get(cell.getColumnIndex()).getText()) {
-                    case "Прізвище":
+                switch (tableColumns.get(cell.getColumnIndex()).getText().toLowerCase()) {
+                    case SECOND_NAME_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("secondName"));
                         poll.setSecondName(cell.getStringCellValue());
                         break;
-                    case "Ім'я":
+                    case FIRST_NAME_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("firstName"));
                         poll.setFirstName(cell.getStringCellValue());
                         break;
-                    case "Заклад":
+                    case INSTITUTION_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("institution"));
                         poll.setInstitution(cell.getStringCellValue());
                         break;
-                    case "Відділ":
+                    case DEPARTMENT_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("department"));
                         poll.setDepartment(cell.getStringCellValue());
                         break;
-                    case "Електронна пошта":
+                    case EMAIL_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("email"));
                         poll.setEmail(cell.getStringCellValue());
                         break;
-                    case "Стан":
+                    case STATE_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("state"));
                         poll.setState(cell.getStringCellValue());
                         break;
-                    case "Розпочато":
+                    case STARTED_AT_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("startedAt"));
                         poll.setStartedAt(cell.getStringCellValue());
                         break;
-                    case "Завершено":
+                    case FINISHED_AT_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("finishedAt"));
                         poll.setFinishedAt(cell.getStringCellValue());
                         break;
-                    case "Витрачений час":
+                    case TIME_SPENT_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("timeSpent"));
                         poll.setTimeSpent(cell.getStringCellValue());
                         break;
-                    case "Оцінка/20,00":
+                    case RATING_COLUMN:
                         tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new PropertyValueFactory<Poll, String>("rating"));
                         poll.setRating(cell.getStringCellValue());
                         break;
                 }
             }else {
-                questions.add(new QuestionRating(tableColumns.get(cell.getColumnIndex()).getText(), cell.getStringCellValue().replace(",", ".").replace("-", "0")));
+                questions.add(new QuestionRating(tableColumns.get(cell.getColumnIndex()).getText(), fixRatingValue(cell.getStringCellValue())));
                 tableColumns.get(cell.getColumnIndex()).setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Poll, String>, ObservableValue<String>>() {
                     @Override
                     public ObservableValue<String> call(TableColumn.CellDataFeatures<Poll, String> p) {

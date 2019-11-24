@@ -19,46 +19,47 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.List;
 
+import static iful.exams.poll.util.Constants.FILE_FILTER;
+
 public class MainController {
 
     @FXML
-    private Button button;
+    private Button newFileButton;
 
     @FXML
-    private ListView filelist;
+    private ListView fileList;
 
     public void initialize() {
-        filelist.setItems(FXCollections.observableArrayList(new File("C:/Users/dziob/Desktop/test.xlsx")));
+        fileList.setItems(FXCollections.observableArrayList(new File("C:/Users/dziob/Desktop/test.xlsx")));
     }
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        Stage stage = (Stage) button.getScene().getWindow();
+        Stage stage = (Stage) newFileButton.getScene().getWindow();
+
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Microsoft Excel Files", "*.xlsx")
-        );
+        fileChooser.getExtensionFilters().addAll(FILE_FILTER);
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(stage);
         if (selectedFiles != null) {
-            filelist.setItems(FXCollections.observableArrayList(selectedFiles));
+            fileList.setItems(FXCollections.observableArrayList(selectedFiles));
         }
     }
 
     @FXML
     private void handleFileListAction(MouseEvent mouseEvent) throws IOException {
         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-            int listIndex = filelist.getSelectionModel().getSelectedIndex();
+            int listIndex = fileList.getSelectionModel().getSelectedIndex();
             if(mouseEvent.getClickCount() == 2 && listIndex != -1) {
-                List<File> files = filelist.getItems();
+                List<File> files = fileList.getItems();
 
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader();
                     fxmlLoader.setLocation(getClass().getResource("/fxml/OpenedFileDialog.fxml"));
                     Parent root = fxmlLoader.load();
 
-                    FileDialogController openedFileDilogController = fxmlLoader.getController();
+                    FileDialogController fileDilogController = fxmlLoader.getController();
                     //transfer file to FileDialogController controller
-                    openedFileDilogController.transferFile(files.get(listIndex));
+                    fileDilogController.transferFile(files.get(listIndex));
 
                     Stage newStage = new Stage();
                     Scene scene = new Scene(root);

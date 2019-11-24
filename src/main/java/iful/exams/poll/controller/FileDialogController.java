@@ -3,21 +3,28 @@ package iful.exams.poll.controller;
 import iful.exams.poll.model.Poll;
 import iful.exams.poll.model.QuestionRating;
 import iful.exams.poll.util.DateUtil;
+import iful.exams.poll.util.FIleUtil;
 import iful.exams.poll.util.PopulateTableViewUtil;
+import static iful.exams.poll.util.Constants.*;
+import static iful.exams.poll.util.ValuesUtil.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FileDialogController {
@@ -32,15 +39,13 @@ public class FileDialogController {
     @FXML
     private Button resetButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private CheckBox onlyByName;
     @FXML
     private DatePicker datePicker;
     private ObservableList<Poll> fileData;
     private File file;
-    Locale ukLocale = new Locale("uk", "UA");
-    DateFormat pickerDateFormat = new SimpleDateFormat("dd MMMM yyyy hh:mm", ukLocale);
-    DateFormat textFieldDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm", ukLocale);
-    DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
 
     public void transferFile(File file) {
         this.file = file;
@@ -52,6 +57,7 @@ public class FileDialogController {
                 PopulateTableViewUtil populateUtil = new PopulateTableViewUtil(tableView, file);
                 fileData = fixRatingValues(populateUtil.populateTableView());
                 tableView.setItems(fileData);
+                calculateGeneralRating(tableView, fileData);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,15 +70,14 @@ public class FileDialogController {
 
     @FXML
     private void search(){
-        System.out.println(tableView.getItems().size());
         if(tableView.getItems().size() != fileData.size())
             tableView.setItems(fileData);
-        ObservableList<Poll> searchResult = FXCollections.observableArrayList(tableView.getItems().stream().filter(item -> {
+            ObservableList<Poll> searchResult = FXCollections.observableArrayList(tableView.getItems().stream().filter(item -> {
                 try {
-                    Date itemStartDate = pickerDateFormat.parse(item.getStartedAt());
-                    Date itemEndDate = pickerDateFormat.parse(item.getStartedAt());
-                    Date userPickedStartDate = textFieldDateFormat.parse(datePicker.getValue().toString()+ " " + (startTime.getText().isEmpty() ? "00:00" : startTime.getText()));
-                    Date userPickedSEndDate = textFieldDateFormat.parse(datePicker.getValue().toString()+ " " + (endTime.getText().isEmpty() ? "23:59" : endTime.getText()));
+                    Date itemStartDate = DATEPICKER_DATE_FORMAT.parse(item.getStartedAt());
+                    Date itemEndDate = DATEPICKER_DATE_FORMAT.parse(item.getStartedAt());
+                    Date userPickedStartDate = SEARCH_DATE_FORMAT.parse(datePicker.getValue().toString()+ " " + (startTime.getText().isEmpty() ? "00:00" : startTime.getText()));
+                    Date userPickedSEndDate = SEARCH_DATE_FORMAT.parse(datePicker.getValue().toString()+ " " + (endTime.getText().isEmpty() ? "23:59" : endTime.getText()));
                     if(onlyByName.isSelected())
                         return (item.getSecondName().toLowerCase()+' '+item.getFirstName().toLowerCase()).contains(studentFullName.getText());
                     else return !DateUtil.compare(itemStartDate, userPickedStartDate) && DateUtil.compare(itemEndDate, userPickedSEndDate)
@@ -84,7 +89,8 @@ public class FileDialogController {
             }).collect(Collectors.toList()));
 
         tableView.setItems(searchResult);
-        if(searchResult.isEmpty()) tableView.setPlaceholder(new Label("Немає результатів"));
+        calculateGeneralRating(tableView, searchResult);
+        if(searchResult.isEmpty()) tableView.setPlaceholder(new Label(NO_SEARCH_RESULTS));
         resetButton.setVisible(true);
     }
 
@@ -98,24 +104,20 @@ public class FileDialogController {
         onlyByName.setSelected(false);
     }
 
-    private ObservableList<Poll> fixRatingValues(ObservableList<Poll> fileData){
-        Iterator<Poll> itr = fileData.iterator();
-        while (itr.hasNext()){
-            Poll poll = itr.next();
-            double realSumRating = 0.0;
-            for(QuestionRating qr : poll.getQuestionsRating()){
-                if(Double.parseDouble(qr.getRating()) > 0.4){
-                    qr.setRating("0.4");
-                    realSumRating += 0.4;
-                }
-                else{
-                    realSumRating += Double.parseDouble(qr.getRating());
-                }
-            }
-            String fixedRating = String.valueOf(Math.round(realSumRating * 10.0) / 10.0);
-            poll.setRating(fixedRating);
+    @FXML
+    private void handleSaveAction(){
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        fileChooser.getExtensionFilters().add(FILE_FILTER);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(stage);
+        if(file != null){
+            FIleUtil.save(tableView, file);
         }
-        return fileData;
     }
+
 
 }
